@@ -51,8 +51,14 @@ describe("DataTable", () => {
     await user.click(screen.getByRole("button", { name: "Sort by Model" }));
 
     const rows = screen.getAllByRole("row").slice(1);
+    const firstRow = rows[0];
+    const secondRow = rows[1];
 
-    expect(within(rows[0]).getByText("Nimbus Multimodal 14B")).toBeInTheDocument();
-    expect(within(rows[1]).getByText("Vector Vision 70B")).toBeInTheDocument();
+    if (!firstRow || !secondRow) {
+      throw new Error("Expected two data rows after sorting");
+    }
+
+    expect(within(firstRow).getByText("Nimbus Multimodal 14B")).toBeInTheDocument();
+    expect(within(secondRow).getByText("Vector Vision 70B")).toBeInTheDocument();
   });
 });

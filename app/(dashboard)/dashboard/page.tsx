@@ -344,7 +344,6 @@ function AnimatedProgressBar({
 
   useEffect(() => {
     if (prefersReducedMotion) {
-      setDisplayValue(value);
       return;
     }
 
@@ -359,7 +358,7 @@ function AnimatedProgressBar({
         "h-full rounded-full transition-[width] duration-1000 ease-out motion-reduce:transition-none",
         className,
       )}
-      style={{ width: `${displayValue}%` }}
+      style={{ width: `${prefersReducedMotion ? value : displayValue}%` }}
     />
   );
 }
@@ -376,7 +375,6 @@ function CountUpNumber({
 
   useEffect(() => {
     if (prefersReducedMotion) {
-      setDisplayValue(value);
       return;
     }
 
@@ -398,7 +396,6 @@ function CountUpNumber({
       }
     };
 
-    setDisplayValue(0);
     animationFrame = window.requestAnimationFrame(tick);
 
     return () => window.cancelAnimationFrame(animationFrame);
@@ -406,7 +403,7 @@ function CountUpNumber({
 
   return (
     <span aria-label={`${value}${suffix}`} className="tabular-nums">
-      {displayValue}
+      {prefersReducedMotion ? value : displayValue}
       {suffix}
     </span>
   );

@@ -57,7 +57,6 @@ function AnimatedMetricValue({ isActive = false, value }: { isActive?: boolean; 
 
   useEffect(() => {
     if (!isActive || !parts || !window.requestAnimationFrame) {
-      setDisplayValue(value);
       return;
     }
 
@@ -66,8 +65,9 @@ function AnimatedMetricValue({ isActive = false, value }: { isActive?: boolean; 
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (prefersReducedMotion) {
-      setDisplayValue(value);
-      return;
+      const animationFrame = window.requestAnimationFrame(() => setDisplayValue(value));
+
+      return () => window.cancelAnimationFrame(animationFrame);
     }
 
     let animationFrame = 0;
@@ -94,7 +94,6 @@ function AnimatedMetricValue({ isActive = false, value }: { isActive?: boolean; 
       }
     };
 
-    setDisplayValue(`${parts.prefix}${formatter.format(0)}${parts.suffix}`);
     animationFrame = window.requestAnimationFrame(tick);
 
     return () => window.cancelAnimationFrame(animationFrame);
@@ -102,7 +101,7 @@ function AnimatedMetricValue({ isActive = false, value }: { isActive?: boolean; 
 
   return (
     <span aria-label={value} className="inline-block min-w-[3ch]">
-      {displayValue}
+      {isActive && parts ? displayValue : value}
     </span>
   );
 }
